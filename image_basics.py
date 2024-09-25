@@ -37,7 +37,7 @@ def to_sitk_image(np_image, reference_img):
     # todo: do not forget to copy meta-information (e.g., spacing, origin, etc.) from the reference image
     #  (hint: 'CopyInformation')! (otherwise defaults are set)
     """
-    origin = sitk.GetOrigin(reference_img)
+    img = sitk.GetImageFromArray(np_image)
 
     img = img.CopyInformation(reference_img)  # todo: modify here
     
