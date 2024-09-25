@@ -9,8 +9,13 @@ def load_image(img_path, is_label_img):
     # todo: if 'is_label_img' is True use argument outputPixelType=sitk.sitkUInt8,
     #  else use outputPixelType=sitk.sitkFloat32
     """
-    pixel_type = None  # todo: modify here
-    img = None  # todo: modify here
+    if is_label_img == True:
+        outputPixelType = sitk.sitkUInt8
+    else: 
+        outputPixelType = sitk.sitkFloat32
+    
+    pixel_type = outputPixelType  # todo: modify here
+    img = sitk.ReadImage(img_path, pixel_type)  # todo: modify here
 
     return img
 
@@ -20,7 +25,7 @@ def to_numpy_array(img):
     TO_NUMPY_ARRAY:
     # todo: transform the SimpleITK image to a numpy ndarray (hint: 'GetArrayFromImage')
     """
-    np_img = None  # todo: modify here
+    np_img = sitk.GetArrayFromImage(img)  # todo: modify here
 
     return np_img
 
@@ -31,9 +36,9 @@ def to_sitk_image(np_image, reference_img):
     # todo: transform the numpy ndarray to a SimpleITK image (hint: 'GetImageFromArray')
     # todo: do not forget to copy meta-information (e.g., spacing, origin, etc.) from the reference image
     #  (hint: 'CopyInformation')! (otherwise defaults are set)
-    """
+    origin = sitk.GetOrigin(reference_img)
 
-    img = None  # todo: modify here
+    img = sitk.SetOrigin(sitk.GetImageFromArray(np_image), origin)  # todo: modify here
     # todo: ...
 
     return img
