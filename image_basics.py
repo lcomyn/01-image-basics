@@ -65,7 +65,7 @@ def preprocess_rescale_sitk(img, new_min_val, new_max_val):
     # todo: rescale the intensities of the img to the range [new_min_val, new_max_val]
     # (hint: RescaleIntensity)
     """
-    rescaled_img = sitk.RescaleIntesityImageFilter(img, output_minimum=new_min_val, output_maximum=new_max_val)  # todo: modify here
+    rescaled_img = sitk.RescaleIntesityImageFilter(img, outputMinimum=new_min_val, outputMaximum=new_max_val)  # todo: modify here
 
     return rescaled_img
 
@@ -80,18 +80,21 @@ def register_images(img, label_img, atlas_img):
     registration_method = _get_registration_method(
         atlas_img, img
     )  # type: sitk.ImageRegistrationMethod
-    transform = None  # todo: modify here
+    transform = registration_method(atlas_img, img)  # todo: modify here
 
     # todo: apply the obtained transform to register the image (img) to the atlas image (atlas_img)
     # hint: 'Resample' (with referenceImage=atlas_img, transform=transform, interpolator=sitkLinear,
     # defaultPixelValue=0.0, outputPixelType=img.GetPixelIDValue())
-    registered_img = None  # todo: modify here
+    registered_img = sitk.Resample(img, referenceImg = atlas_img, transform = transform, interpolator = sitkLinear, defaultPixelValue = 0.0,
+                                   outputPixelType = img.GetPixelIDValue)
+    # todo: modify here
 
     # todo: apply the obtained transform to register the label image (label_img) to the atlas image (atlas_img), too
     # be careful with the interpolator type for label images!
     # hint: 'Resample' (with interpolator=sitkNearestNeighbor, defaultPixelValue=0.0,
     # outputPixelType=label_img.GetPixelIDValue())
-    registered_label = None  # todo: modify here
+    registered_label = sitk.Resample(img, referenceImg = atlas_img, transform = transform, interpolator = sitkNearestNeighbor, defaultPixelValue = 0.0,
+                                     outputPixelType = img.GetPixelIDValue)  # todo: modify here
 
     return registered_img, registered_label
 
