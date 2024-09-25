@@ -37,7 +37,7 @@ def to_sitk_image(np_image, reference_img):
     # todo: do not forget to copy meta-information (e.g., spacing, origin, etc.) from the reference image
     #  (hint: 'CopyInformation')! (otherwise defaults are set)
     """
-    img = sitk.GetImageFromArray(np_image)
+    origin = sitk.GetOrigin(reference_img)
 
     img = img.CopyInformation(reference_img)  # todo: modify here
     
@@ -65,7 +65,7 @@ def preprocess_rescale_sitk(img, new_min_val, new_max_val):
     # todo: rescale the intensities of the img to the range [new_min_val, new_max_val]
     # (hint: RescaleIntensity)
     """
-    rescaled_img = sitk.RescaleIntesity(img, outputMinimum=new_min_val, outputMaximum=new_max_val)  # todo: modify here
+    rescaled_img = sitk.RescaleIntensity(img, outputMinimum=new_min_val, outputMaximum=new_max_val)  # todo: modify here
 
     return rescaled_img
 
