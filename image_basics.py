@@ -65,7 +65,7 @@ def preprocess_rescale_sitk(img, new_min_val, new_max_val):
     # todo: rescale the intensities of the img to the range [new_min_val, new_max_val]
     # (hint: RescaleIntensity)
     """
-    rescaled_img = sitk.RescaleIntesity(img, outputMinimum=new_min_val, outputMaximum=new_max_val)  # todo: modify here
+    rescaled_img = sitk.RescaleIntensity(img, outputMinimum=new_min_val, outputMaximum=new_max_val)  # todo: modify here
 
     return rescaled_img
 
@@ -121,3 +121,6 @@ def postprocess_largest_component(label_img):
 
     largest_component = relabeled_components == 1  # zero is background
     return largest_component
+
+
+
