@@ -36,6 +36,7 @@ def to_sitk_image(np_image, reference_img):
     # todo: transform the numpy ndarray to a SimpleITK image (hint: 'GetImageFromArray')
     # todo: do not forget to copy meta-information (e.g., spacing, origin, etc.) from the reference image
     #  (hint: 'CopyInformation')! (otherwise defaults are set)
+    """
     origin = sitk.GetOrigin(reference_img)
 
     img = sitk.SetOrigin(sitk.GetImageFromArray(np_image), origin)  # todo: modify here
