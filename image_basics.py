@@ -130,7 +130,7 @@ def register_images(img, label_img, atlas_img):
     # outputPixelType=label_img.GetPixelIDValue())
     registered_label = sitk.Resample(label_img, referenceImage = atlas_img, transform = transform, interpolator =sitkNearestNeighbor, defaultPixelValue = 0.0,
                                      outputPixelType = img.GetPixelIDValue())  # todo: modify here
-
+    registered_img_uint8 = sitk.Cast(registered_img, sitk.sitkUInt8)
     return registered_img, registered_label
 
 
