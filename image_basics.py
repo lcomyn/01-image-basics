@@ -1,6 +1,44 @@
 import numpy as np
 import SimpleITK as sitk
 
+# --- DO NOT CHANGE ---
+def _get_registration_method(atlas_img, img) -> sitk.ImageRegistrationMethod:
+    registration_method = sitk.ImageRegistrationMethod()
+
+    # Similarity metric settings.
+    registration_method.SetMetricAsMattesMutualInformation(numberOfHistogramBins=50)
+    registration_method.SetMetricSamplingStrategy(registration_method.REGULAR)
+    registration_method.SetMetricSamplingPercentage(0.2)
+
+    registration_method.SetMetricUseFixedImageGradientFilter(False)
+    registration_method.SetMetricUseMovingImageGradientFilter(False)
+
+    registration_method.SetInterpolator(sitk.sitkLinear)
+
+    # Optimizer settings.
+    registration_method.SetOptimizerAsGradientDescent(
+        learningRate=1.0,
+        numberOfIterations=100,
+        convergenceMinimumValue=1e-6,
+        convergenceWindowSize=10,
+    )
+    registration_method.SetOptimizerScalesFromPhysicalShift()
+
+    # Setup for the multi-resolution framework.
+    registration_method.SetShrinkFactorsPerLevel(shrinkFactors=[4, 2, 1])
+    registration_method.SetSmoothingSigmasPerLevel(smoothingSigmas=[2, 1, 0])
+    registration_method.SmoothingSigmasAreSpecifiedInPhysicalUnitsOn()
+
+    # Set initial transform
+    initial_transform = sitk.CenteredTransformInitializer(
+        atlas_img,
+        img,
+        sitk.Euler3DTransform(),
+        sitk.CenteredTransformInitializerFilter.GEOMETRY,
+    )
+    registration_method.SetInitialTransform(initial_transform, inPlace=False)
+    return registration_method
+# --- DO NOT CHANGE ---
 
 def load_image(img_path, is_label_img):
     """
@@ -83,15 +121,15 @@ def register_images(img, label_img, atlas_img):
     # hint: 'Resample' (with referenceImage=atlas_img, transform=transform, interpolator=sitkLinear,
     # defaultPixelValue=0.0, outputPixelType=img.GetPixelIDValue())
     registered_img = sitk.Resample(img, referenceImg = atlas_img, transform = transform, interpolator = sitkLinear, defaultPixelValue = 0.0,
-                                   outputPixelType = img.GetPixelIDValue)
+                                   outputPixelType = img.GetPixelIDValue())
     # todo: modify here
 
     # todo: apply the obtained transform to register the label image (label_img) to the atlas image (atlas_img), too
     # be careful with the interpolator type for label images!
     # hint: 'Resample' (with interpolator=sitkNearestNeighbor, defaultPixelValue=0.0,
     # outputPixelType=label_img.GetPixelIDValue())
-    registered_label = sitk.Resample(img, referenceImg = atlas_img, transform = transform, interpolator =sitkNearestNeighbor, defaultPixelValue = 0.0,
-                                     outputPixelType = img.GetPixelIDValue)  # todo: modify here
+    registered_label = sitk.Resample(label_img, referenceImg = atlas_img, transform = transform, interpolator =sitkNearestNeighbor, defaultPixelValue = 0.0,
+                                     outputPixelType = img.GetPixelIDValue())  # todo: modify here
 
     return registered_img, registered_label
 
